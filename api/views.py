@@ -1,10 +1,7 @@
-
-import operator
 import logging
-from django.shortcuts import render
 
 from django.views import View
-from django.http import HttpResponse, JsonResponse
+from django.http import JsonResponse
 
 from django.core.serializers import serialize
 
@@ -34,8 +31,8 @@ class CompanyView(View):
     def get_single(request, id):
         single_company = Company.objects.get(id=id)
 
-        LOGGER.info("COMPID")
-        LOGGER.info(single_company.pk)
+        LOGGER.info("LOGGED")
+        LOGGER.info(single_company)
 
         return JsonResponse(single_company.to_json())
 
@@ -56,10 +53,19 @@ class VacancyView(View):
 
         return JsonResponse(vacancies)
 
+    def get_s(request, id):
+
+        single_vac = Vacancy.objects.get(id=id)
+
+        return JsonResponse(single_vac.to_json())
+
     def get_single(request, id):
+
         single_vacancy = Vacancy.objects.get(id=id)
 
-        return JsonResponse(single_vacancy.to_json())
+        serialized = VacancySerializer(single_vacancy, many=False).data
+
+        return JsonResponse(serialized)
 
     def top_ten(request):
         sorted_vacancy = Vacancy.objects.order_by('-salary')[:10]
